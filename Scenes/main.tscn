@@ -28,6 +28,7 @@ position = Vector2(1200, 450)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2046457650]
 anchor_mode = 0
+zoom = Vector2(1.75, 1.75)
 
 [node name="Plane" parent="." unique_id=761971762 instance=ExtResource("3_8gbba")]
 position = Vector2(150, 240)
