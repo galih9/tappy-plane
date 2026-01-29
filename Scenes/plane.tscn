@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://dt134v3hcptng"]
+
+[ext_resource type="Texture2D" uid="uid://bvd8x0sjtarec" path="res://Assets/Sprites/Planes/planeBlue1.png" id="1_8dfpg"]
+[ext_resource type="Script" uid="uid://cisk6t5g16lrk" path="res://Scripts/plane.gd" id="1_ey2si"]
+[ext_resource type="Texture2D" uid="uid://cm7cadl8nnvwv" path="res://Assets/Sprites/Planes/planeBlue2.png" id="2_ey2si"]
+[ext_resource type="Texture2D" uid="uid://btotxs8l04b0v" path="res://Assets/Sprites/Planes/planeBlue3.png" id="3_lglsw"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mlp3y"]
+radius = 24.0
+height = 64.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8wq4d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_8dfpg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ey2si")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_lglsw")
+}],
+"loop": true,
+"name": &"flying",
+"speed": 5.0
+}]
+
+[node name="Plane" type="CharacterBody2D" unique_id=761971762]
+script = ExtResource("1_ey2si")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1941925229]
+rotation = -1.5707964
+shape = SubResource("CapsuleShape2D_mlp3y")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=692740075]
+scale = Vector2(0.6818182, 0.60958904)
+sprite_frames = SubResource("SpriteFrames_8wq4d")
+animation = &"flying"
+frame = 1
+frame_progress = 0.9538588

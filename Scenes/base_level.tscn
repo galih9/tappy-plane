@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://dd1qgdtgwfw4e"]
+
+[ext_resource type="Texture2D" uid="uid://hx62y0cv6y7v" path="res://Assets/Sprites/groundDirt.png" id="1_5gpc1"]
+[ext_resource type="Script" path="res://Scripts/scrolling_object.gd" id="1_scrolling"]
+
+[node name="BaseLevel" type="Node2D" unique_id=802909878]
+script = ExtResource("1_scrolling")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1093571945]
+position = Vector2(0, 7.1525574e-07)
+scale = Vector2(0.99999994, 1.0140846)
+texture = ExtResource("1_5gpc1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1218744782]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=973858745]
+polygon = PackedVector2Array(404, 36, 404, 0, 360, -10, 341, -36, 253, -32, 230, -12, 192, -8, 168, 18, 131, 19, 105, 9, 67, 8, 34, -23, -30, -25, -54, -9, -95, -9, -155, -32, -248, -28, -269, -3, -313, 9, -363, 6, -370, -2, -404, 0, -404, 36)
