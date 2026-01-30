@@ -26,7 +26,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Plane" type="CharacterBody2D" unique_id=761971762]
+[node name="Plane" type="CharacterBody2D" unique_id=761971762 groups=["player"]]
 script = ExtResource("1_ey2si")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1941925229]

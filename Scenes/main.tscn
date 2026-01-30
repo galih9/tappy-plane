@@ -6,6 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://dt134v3hcptng" path="res://Scenes/plane.tscn" id="3_8gbba"]
 [ext_resource type="Texture2D" uid="uid://b22jo8tig0u7" path="res://Assets/Sprites/UI/textGameOver.png" id="4_gameover"]
 [ext_resource type="Texture2D" uid="uid://d17pluw0tguf" path="res://Assets/Sprites/UI/buttonLarge.png" id="5_restart"]
+[ext_resource type="Texture2D" uid="uid://pnu1uliannka" path="res://Assets/Sprites/UI/textGetReady.png" id="7_6bp64"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_21xkr"]
+font_size = 26
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node2D" unique_id=1039145287]
 script = ExtResource("1_gamemanager")
@@ -31,7 +37,7 @@ anchor_mode = 0
 zoom = Vector2(1.75, 1.75)
 
 [node name="Plane" parent="." unique_id=761971762 instance=ExtResource("3_8gbba")]
-position = Vector2(150, 240)
+position = Vector2(127, 142)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1539003661]
 
@@ -51,13 +57,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -100.0
-offset_right = 200.0
-offset_bottom = -20.0
+offset_left = -111.5
+offset_top = -98.0
+offset_right = 117.0
+offset_bottom = -52.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_gameover")
+expand_mode = 1
 
 [node name="RestartButton" type="TextureButton" parent="CanvasLayer/GameOverControl" unique_id=1568188326]
 layout_mode = 1
@@ -83,5 +90,67 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "RESTART"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HUD" type="Control" parent="CanvasLayer" unique_id=458243143]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD" unique_id=727612210]
+layout_mode = 0
+offset_right = 162.0
+offset_bottom = 36.0
+text = "Distance: 0m"
+label_settings = SubResource("LabelSettings_21xkr")
+
+[node name="StartGameControl" type="Control" parent="CanvasLayer" unique_id=270257645]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 595.0
+offset_bottom = 842.0
+
+[node name="PlayGameText" type="TextureRect" parent="CanvasLayer/StartGameControl" unique_id=1307721393]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -111.5
+offset_top = -98.0
+offset_right = 117.0
+offset_bottom = -52.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_6bp64")
+expand_mode = 1
+
+[node name="PlayButton" type="TextureButton" parent="CanvasLayer/StartGameControl" unique_id=706348977]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 20.0
+offset_right = 75.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_restart")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/StartGameControl/PlayButton" unique_id=689456511]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "PLAY"
 horizontal_alignment = 1
 vertical_alignment = 1
