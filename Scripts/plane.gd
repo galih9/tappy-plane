@@ -5,12 +5,20 @@ const JUMP_FORCE = -400.0
 const MAX_ROTATION = 25.0
 const MIN_ROTATION = -25.0
 
+# Puff effect textures
+var puff_large_texture: Texture2D
+var puff_small_texture: Texture2D
+
 @onready var animated_sprite = $AnimatedSprite2D
 var game_manager
 
 func _ready():
 	game_manager = get_tree().root.get_node("Main")
 	animated_sprite.play("flying")
+	
+	# Load puff textures
+	puff_large_texture = load("res://Assets/Sprites/puffLarge.png")
+	puff_small_texture = load("res://Assets/Sprites/puffSmall.png")
 
 func _physics_process(delta):
 	if not game_manager:
@@ -33,7 +41,7 @@ func _physics_process(delta):
 		
 	move_and_slide()
 	
-	# Collision Check with ground, spikes, etc.
+	# Collision Check with ground, spikes, barriers etc.
 	if get_slide_collision_count() > 0:
 		for i in range(get_slide_collision_count()):
 			var collision = get_slide_collision(i)
@@ -41,7 +49,7 @@ func _physics_process(delta):
 			
 			if collider:
 				# Check by group first (most reliable)
-				if collider.is_in_group("ground") or collider.is_in_group("spike"):
+				if collider.is_in_group("ground") or collider.is_in_group("spike") or collider.is_in_group("barrier"):
 					die()
 					return
 				
@@ -60,9 +68,51 @@ func _physics_process(delta):
 				if "Spike" in collider_name or "Spike" in parent_name or "BaseSpike" in parent_name:
 					die()
 					return
+				
+				# Check if it's a barrier
+				if "Barrier" in collider_name or "Barrier" in parent_name:
+					die()
+					return
 
 func jump():
 	velocity.y = JUMP_FORCE
+	_spawn_puff_effect()
+
+func _spawn_puff_effect():
+	# Spawn large puff
+	var puff_large = Sprite2D.new()
+	puff_large.texture = puff_large_texture
+	puff_large.global_position = global_position + Vector2(-20, 10)
+	puff_large.z_index = -1
+	get_parent().add_child(puff_large)
+	
+	# Spawn small puff
+	var puff_small = Sprite2D.new()
+	puff_small.texture = puff_small_texture
+	puff_small.global_position = global_position + Vector2(-30, 0)
+	puff_small.z_index = -1
+	get_parent().add_child(puff_small)
+	
+	# Animate puffs with tweens
+	_animate_puff(puff_large, 0.4)
+	_animate_puff(puff_small, 0.35)
+
+func _animate_puff(puff: Sprite2D, duration: float):
+	var tween = create_tween()
+	tween.set_parallel(true)
+	
+	# Fade out
+	tween.tween_property(puff, "modulate:a", 0.0, duration)
+	
+	# Move down and left
+	tween.tween_property(puff, "position:y", puff.position.y + 30, duration)
+	tween.tween_property(puff, "position:x", puff.position.x - 40, duration)
+	
+	# Scale down slightly
+	tween.tween_property(puff, "scale", Vector2(0.5, 0.5), duration)
+	
+	# Clean up after animation
+	tween.chain().tween_callback(puff.queue_free)
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

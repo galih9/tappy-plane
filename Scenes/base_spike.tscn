@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c2543gxutk414"]
 
 [ext_resource type="Texture2D" uid="uid://cs03tc128pccr" path="res://Assets/Sprites/rock.png" id="1_nqhm5"]
-[ext_resource type="Script" path="res://Scripts/spike.gd" id="2_spike"]
+[ext_resource type="Script" uid="uid://bd8u3itspolti" path="res://Scripts/spike.gd" id="2_spike"]
 
 [node name="BaseSpike" type="Node2D" unique_id=282554081 groups=["spike"]]
 script = ExtResource("2_spike")

@@ -13,6 +13,9 @@ font_size = 26
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(1000, 20)
+
 [node name="Main" type="Node2D" unique_id=1039145287]
 script = ExtResource("1_gamemanager")
 
@@ -21,6 +24,7 @@ scroll_scale = Vector2(0.5, 1)
 repeat_size = Vector2(800, 0)
 autoscroll = Vector2(-50, 0)
 repeat_times = 2
+z_index = -100
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=1830102029]
 texture = ExtResource("1_jjgbg")
@@ -32,12 +36,23 @@ position = Vector2(400, 450)
 [node name="BaseLevel2" parent="." unique_id=802909879 instance=ExtResource("2_bo1nx")]
 position = Vector2(1200, 450)
 
+[node name="CeilingBarrier" type="Node2D" parent="." groups=["barrier"]]
+visible = false
+position = Vector2(0, -50)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CeilingBarrier" groups=["barrier"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CeilingBarrier/StaticBody2D"]
+position = Vector2(300, 0)
+shape = SubResource("RectangleShape2D_ceiling")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2046457650]
 anchor_mode = 0
 zoom = Vector2(1.75, 1.75)
 
 [node name="Plane" parent="." unique_id=761971762 instance=ExtResource("3_8gbba")]
 position = Vector2(127, 142)
+z_index = 10
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1539003661]
 
