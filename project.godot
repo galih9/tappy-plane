@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 window/size/viewport_width=595
 window/size/viewport_height=842
+window/size/window_width_override=595
+window/size/window_height_override=842
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+window/handheld/orientation="portrait"
 
 [input]
 
