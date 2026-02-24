@@ -15,6 +15,10 @@ run/main_scene="uid://dtthkfs7xo3ra"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SaveData="*res://Scripts/save_data.gd"
+
 [display]
 
 window/size/viewport_width=595
@@ -22,7 +26,6 @@ window/size/viewport_height=842
 window/size/window_width_override=595
 window/size/window_height_override=842
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 window/handheld/orientation="portrait"
 
 [input]

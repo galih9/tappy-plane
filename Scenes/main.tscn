@@ -7,24 +7,26 @@
 [ext_resource type="Texture2D" uid="uid://b22jo8tig0u7" path="res://Assets/Sprites/UI/textGameOver.png" id="4_gameover"]
 [ext_resource type="Texture2D" uid="uid://d17pluw0tguf" path="res://Assets/Sprites/UI/buttonLarge.png" id="5_restart"]
 [ext_resource type="Texture2D" uid="uid://pnu1uliannka" path="res://Assets/Sprites/UI/textGetReady.png" id="7_6bp64"]
+[ext_resource type="Texture2D" uid="uid://h0ca2to7na68" path="res://Assets/Sprites/UI/UIbg.png" id="8_344ge"]
+[ext_resource type="Script" uid="uid://dr7xta3frmem8" path="res://Scripts/skin_selector.gd" id="9_skinsel"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(1000, 20)
 
 [sub_resource type="LabelSettings" id="LabelSettings_21xkr"]
 font_size = 26
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
-size = Vector2(1000, 20)
-
 [node name="Main" type="Node2D" unique_id=1039145287]
 script = ExtResource("1_gamemanager")
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=1966735689]
+z_index = -100
 scroll_scale = Vector2(0.5, 1)
 repeat_size = Vector2(800, 0)
 autoscroll = Vector2(-50, 0)
 repeat_times = 2
-z_index = -100
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=1830102029]
 texture = ExtResource("1_jjgbg")
@@ -36,13 +38,13 @@ position = Vector2(400, 450)
 [node name="BaseLevel2" parent="." unique_id=802909879 instance=ExtResource("2_bo1nx")]
 position = Vector2(1200, 450)
 
-[node name="CeilingBarrier" type="Node2D" parent="." groups=["barrier"]]
+[node name="CeilingBarrier" type="Node2D" parent="." unique_id=1985207192 groups=["barrier"]]
 visible = false
 position = Vector2(0, -50)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="CeilingBarrier" groups=["barrier"]]
+[node name="StaticBody2D" type="StaticBody2D" parent="CeilingBarrier" unique_id=260304536 groups=["barrier"]]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CeilingBarrier/StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CeilingBarrier/StaticBody2D" unique_id=1638825255]
 position = Vector2(300, 0)
 shape = SubResource("RectangleShape2D_ceiling")
 
@@ -51,8 +53,8 @@ anchor_mode = 0
 zoom = Vector2(1.75, 1.75)
 
 [node name="Plane" parent="." unique_id=761971762 instance=ExtResource("3_8gbba")]
-position = Vector2(127, 142)
 z_index = 10
+position = Vector2(173, 151)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1539003661]
 
@@ -143,6 +145,47 @@ grow_vertical = 2
 texture = ExtResource("7_6bp64")
 expand_mode = 1
 
+[node name="SkinsButton" type="TextureButton" parent="CanvasLayer/StartGameControl" unique_id=706348978]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 90.0
+offset_right = 75.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_restart")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/StartGameControl/SkinsButton" unique_id=689456512]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "SKINS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MenuStarsLabel" type="Label" parent="CanvasLayer/StartGameControl" unique_id=706348979]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 98.5
+offset_right = 298.5
+offset_bottom = 50.0
+grow_horizontal = 2
+text = "⭐ 0"
+label_settings = SubResource("LabelSettings_21xkr")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="PlayButton" type="TextureButton" parent="CanvasLayer/StartGameControl" unique_id=706348977]
 layout_mode = 1
 anchors_preset = 8
@@ -169,3 +212,19 @@ grow_vertical = 2
 text = "PLAY"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SkinSelectionControl" type="Control" parent="CanvasLayer" unique_id=1233728318]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 596.0
+offset_bottom = 842.0
+script = ExtResource("9_skinsel")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/SkinSelectionControl" unique_id=1438001044]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 66.0
+offset_right = 560.0
+offset_bottom = 502.0
+texture = ExtResource("8_344ge")

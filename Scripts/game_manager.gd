@@ -12,6 +12,7 @@ var score = 0
 var scroll_speed = 200.0
 var distance: float = 0.0
 var stars_collected: int = 0
+var waiting_for_first_input = false
 
 # Spawn control
 var spike_spawn_timer: float = 0.0
@@ -63,11 +64,6 @@ var biomes: Array = [
 	}
 ]
 
-# Cursor textures
-var cursor_tap: Texture2D
-var cursor_tap_tick: Texture2D
-var cursor_timer: Timer
-
 # Preloaded scenes
 var spike_scene = preload("res://Scenes/base_spike.tscn")
 var star_scene = preload("res://Scenes/stars.tscn")
@@ -77,31 +73,34 @@ var star_scene = preload("res://Scenes/stars.tscn")
 @onready var restart_button = $CanvasLayer/GameOverControl/RestartButton
 @onready var start_game_screen = $CanvasLayer/StartGameControl
 @onready var play_button = $CanvasLayer/StartGameControl/PlayButton
+@onready var skins_button = $CanvasLayer/StartGameControl/SkinsButton
+@onready var menu_stars_label = $CanvasLayer/StartGameControl/MenuStarsLabel
+@onready var skin_selection_control: Control = $CanvasLayer/SkinSelectionControl
 @onready var hud_label = $CanvasLayer/HUD/Label
 @onready var parallax_bg = $Parallax2D
+@onready var plane_node = $Plane
 @onready var base_level_1 = $BaseLevel
 @onready var base_level_2 = $BaseLevel2
 @onready var ceiling_barrier = $CeilingBarrier
+
+var skin_selector_scene = preload("res://Scripts/skin_selector.gd")
+var skin_selector_instance: Control = null
 
 # Game Over UI labels
 @onready var game_over_distance_label: Label = null
 @onready var game_over_stars_label: Label = null
 
 func _ready():
-	# Configure custom cursor
-	cursor_tap = load("res://Assets/Sprites/UI/tap.png")
-	cursor_tap_tick = load("res://Assets/Sprites/UI/tapTick.png")
-	Input.set_custom_mouse_cursor(cursor_tap)
-	
-	# Setup cursor timer
-	cursor_timer = Timer.new()
-	cursor_timer.one_shot = true
-	cursor_timer.wait_time = 0.5
-	cursor_timer.timeout.connect(_on_cursor_timer_timeout)
-	add_child(cursor_timer)
-	
 	restart_button.pressed.connect(_on_restart_pressed)
 	play_button.pressed.connect(_on_play_pressed)
+	
+	if skins_button:
+		skins_button.pressed.connect(_on_skins_pressed)
+	
+	# Use existing SkinSelectionControl node (with UIbg.png card) as the skin selector
+	if skin_selection_control:
+		skin_selector_instance = skin_selection_control
+		skin_selector_instance.visible = false
 	
 	# Create game over UI labels if they don't exist
 	_setup_game_over_labels()
@@ -109,8 +108,10 @@ func _ready():
 	# Initial state - show start menu, hide game over
 	game_over_screen.visible = false
 	start_game_screen.visible = true
+	_update_menu_stars()
 	is_game_active = false
 	is_game_over = false
+	waiting_for_first_input = false
 	
 	# Hide ceiling barrier initially and disable collision
 	if ceiling_barrier:
@@ -121,6 +122,15 @@ func _ready():
 	
 	# Update HUD
 	_update_hud()
+
+func _update_menu_stars():
+	if menu_stars_label:
+		menu_stars_label.text = "⭐ %d" % SaveData.total_stars
+
+func _on_skins_pressed():
+	if skin_selector_instance:
+		skin_selector_instance.refresh()
+		skin_selector_instance.visible = true
 
 func _setup_game_over_labels():
 	# Check if labels already exist
@@ -168,18 +178,6 @@ func _setup_game_over_labels():
 		game_over_screen.add_child(game_over_stars_label)
 	else:
 		game_over_stars_label = stars_label_node
-
-func _input(event):
-	# Handle cursor click animation
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_trigger_click_cursor()
-
-func _trigger_click_cursor():
-	Input.set_custom_mouse_cursor(cursor_tap_tick)
-	cursor_timer.start()
-
-func _on_cursor_timer_timeout():
-	Input.set_custom_mouse_cursor(cursor_tap)
 
 func _process(delta):
 	if is_game_active and not is_game_over:
@@ -317,9 +315,31 @@ func collect_star():
 	_update_hud()
 
 func _on_play_pressed():
-	start_game()
+	prepare_game()
+
+func prepare_game():
+	is_game_active = false
+	is_game_over = false
+	waiting_for_first_input = true
+	
+	if parallax_bg:
+		parallax_bg.autoscroll = Vector2.ZERO
+	
+	if plane_node:
+		# Center the plane
+		plane_node.position = Vector2(171, 150)
+		plane_node.rotation_degrees = 0
+		plane_node.velocity = Vector2.ZERO
+		var left_guide = plane_node.get_node_or_null("LeftGuide")
+		var right_guide = plane_node.get_node_or_null("RightGuide")
+		if left_guide: left_guide.visible = true
+		if right_guide: right_guide.visible = true
+		
+	start_game_screen.visible = false
+	game_over_screen.visible = false
 
 func start_game():
+	waiting_for_first_input = false
 	is_game_active = true
 	is_game_over = false
 	score = 0
@@ -342,8 +362,12 @@ func start_game():
 	# Reset biome to initial
 	_apply_biome_change()
 	
-	start_game_screen.visible = false
-	game_over_screen.visible = false
+	if plane_node:
+		var left_guide = plane_node.get_node_or_null("LeftGuide")
+		var right_guide = plane_node.get_node_or_null("RightGuide")
+		if left_guide: left_guide.visible = false
+		if right_guide: right_guide.visible = false
+		plane_node.jump()
 	
 	# Resume parallax if it was stopped
 	if parallax_bg:
@@ -366,6 +390,9 @@ func end_game():
 		game_over_distance_label.text = "Distance: %dm" % int(distance)
 	if game_over_stars_label:
 		game_over_stars_label.text = "Stars: %d" % stars_collected
+		
+	# Save collected stars
+	SaveData.add_stars(stars_collected)
 	
 	game_over_screen.visible = true
 	emit_signal("game_over")

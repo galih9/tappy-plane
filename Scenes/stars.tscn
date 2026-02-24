@@ -1,10 +1,47 @@
 [gd_scene format=3 uid="uid://cnlywdu27m6kd"]
 
 [ext_resource type="Texture2D" uid="uid://crx6y2goad6sq" path="res://Assets/Sprites/starBronze.png" id="1_j0g0u"]
-[ext_resource type="Script" path="res://Scripts/star.gd" id="2_star"]
+[ext_resource type="Script" uid="uid://pc05702du8hh" path="res://Scripts/star.gd" id="2_star"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e63qx"]
 radius = 20.0
+
+[sub_resource type="Animation" id="Animation_e63qx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_gjv44"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.75, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 5), Vector2(0, -5), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r8lci"]
+_data = {
+&"RESET": SubResource("Animation_e63qx"),
+&"idle": SubResource("Animation_gjv44")
+}
 
 [node name="Stars" type="Node2D" unique_id=1156601579 groups=["star"]]
 script = ExtResource("2_star")
@@ -16,3 +53,6 @@ texture = ExtResource("1_j0g0u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=874948375]
 shape = SubResource("CircleShape2D_e63qx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=234812820]
+libraries/ = SubResource("AnimationLibrary_r8lci")

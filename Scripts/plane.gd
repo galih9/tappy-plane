@@ -14,7 +14,9 @@ var game_manager
 
 func _ready():
 	game_manager = get_tree().root.get_node("Main")
-	animated_sprite.play("flying")
+	
+	var skin_name = SaveData.selected_skin
+	animated_sprite.play(skin_name)
 	
 	# Load puff textures
 	puff_large_texture = load("res://Assets/Sprites/puffLarge.png")
@@ -28,6 +30,11 @@ func _physics_process(delta):
 	if not game_manager.is_game_active or game_manager.is_game_over:
 		if game_manager.is_game_over:
 			animated_sprite.stop()
+		# When waiting for first input, keep the plane hovering
+		if game_manager.get("waiting_for_first_input"):
+			velocity.y = 0
+			rotation_degrees = 0
+			move_and_slide()
 		return
 		
 	# Apply Gravity
@@ -116,13 +123,21 @@ func _animate_puff(puff: Sprite2D, duration: float):
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if game_manager and game_manager.is_game_active and not game_manager.is_game_over:
-			jump()
+		if game_manager:
+			if game_manager.get("waiting_for_first_input"):
+				game_manager.start_game()
+				jump()
+			elif game_manager.is_game_active and not game_manager.is_game_over:
+				jump()
 	
 	# Also handle keyboard/action
 	if event.is_action_pressed("ui_accept"):
-		if game_manager and game_manager.is_game_active and not game_manager.is_game_over:
-			jump()
+		if game_manager:
+			if game_manager.get("waiting_for_first_input"):
+				game_manager.start_game()
+				jump()
+			elif game_manager.is_game_active and not game_manager.is_game_over:
+				jump()
 
 func die():
 	print("Game Over - Distance: ", int(game_manager.distance), "m, Stars: ", game_manager.stars_collected)
