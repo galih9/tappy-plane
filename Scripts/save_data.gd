@@ -3,6 +3,8 @@ extends Node
 # Persistent save data for TappyPlane
 # Registered as autoload "SaveData" in project.godot
 
+signal skin_changed
+
 const SAVE_PATH = "user://save.cfg"
 
 var total_stars: int = 0
@@ -12,9 +14,9 @@ var unlocked_skins: Array = ["blue"]
 # Skin unlock costs (blue is always free)
 const SKIN_COSTS: Dictionary = {
 	"blue": 0,
-	"green": 50,
-	"red": 100,
-	"yellow": 200
+	"green": 2,
+	"red": 5,
+	"yellow": 10
 }
 
 func _ready():
@@ -63,3 +65,4 @@ func select_skin(skin_name: String):
 	if is_skin_unlocked(skin_name):
 		selected_skin = skin_name
 		save_data()
+		emit_signal("skin_changed")

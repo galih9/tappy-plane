@@ -128,6 +128,7 @@ func _update_menu_stars():
 		menu_stars_label.text = "⭐ %d" % SaveData.total_stars
 
 func _on_skins_pressed():
+	AudioManager.play("click")
 	if skin_selector_instance:
 		skin_selector_instance.refresh()
 		skin_selector_instance.visible = true
@@ -198,6 +199,10 @@ func _process(delta):
 			if spike_spawn_timer <= 0:
 				_spawn_spike(false) # Ground spike
 				spike_spawn_timer = randf_range(1.5, 3.5)
+				
+				# Prevent ceiling spike from spawning too close
+				if cave_mode_enabled and ceiling_spike_spawn_timer < 1.5:
+					ceiling_spike_spawn_timer = 1.5
 		
 		# Ceiling spike spawning (after cave mode enabled)
 		if cave_mode_enabled:
@@ -205,6 +210,10 @@ func _process(delta):
 			if ceiling_spike_spawn_timer <= 0:
 				_spawn_spike(true) # Ceiling spike
 				ceiling_spike_spawn_timer = randf_range(2.0, 4.0)
+				
+				# Prevent ground spike from spawning too close
+				if spike_spawn_timer < 1.5:
+					spike_spawn_timer = 1.5
 		
 		# Star spawning (after 100m)
 		if distance >= 100.0:
@@ -310,11 +319,13 @@ func _spawn_star():
 	add_child(star)
 
 func collect_star():
+	AudioManager.play("stars")
 	stars_collected += 1
 	emit_signal("star_collected")
 	_update_hud()
 
 func _on_play_pressed():
+	AudioManager.play("play")
 	prepare_game()
 
 func prepare_game():
@@ -326,6 +337,10 @@ func prepare_game():
 		parallax_bg.autoscroll = Vector2.ZERO
 	
 	if plane_node:
+		# Update skin
+		if plane_node.has_method("update_skin"):
+			plane_node.update_skin()
+			
 		# Center the plane
 		plane_node.position = Vector2(171, 150)
 		plane_node.rotation_degrees = 0
@@ -380,6 +395,7 @@ func end_game():
 	if is_game_over: return
 	is_game_over = true
 	is_game_active = false
+	AudioManager.play("game_over")
 	
 	# Stop parallax scrolling
 	if parallax_bg:
@@ -398,4 +414,5 @@ func end_game():
 	emit_signal("game_over")
 
 func _on_restart_pressed():
+	AudioManager.play("click")
 	get_tree().reload_current_scene()

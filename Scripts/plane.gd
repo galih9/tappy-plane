@@ -14,13 +14,18 @@ var game_manager
 
 func _ready():
 	game_manager = get_tree().root.get_node("Main")
+	update_skin()
 	
-	var skin_name = SaveData.selected_skin
-	animated_sprite.play(skin_name)
+	# Listen for skin changes so plane updates on the menu
+	SaveData.skin_changed.connect(update_skin)
 	
 	# Load puff textures
 	puff_large_texture = load("res://Assets/Sprites/puffLarge.png")
 	puff_small_texture = load("res://Assets/Sprites/puffSmall.png")
+
+func update_skin():
+	var skin_name = SaveData.selected_skin
+	animated_sprite.play(skin_name)
 
 func _physics_process(delta):
 	if not game_manager:
@@ -82,6 +87,7 @@ func _physics_process(delta):
 					return
 
 func jump():
+	AudioManager.play("fly")
 	velocity.y = JUMP_FORCE
 	_spawn_puff_effect()
 

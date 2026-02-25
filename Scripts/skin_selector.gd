@@ -141,6 +141,7 @@ func refresh():
 			btn.modulate = Color(0.6, 0.6, 0.6)
 
 func _on_skin_action(skin_name: String):
+	AudioManager.play("click")
 	if SaveData.is_skin_unlocked(skin_name):
 		SaveData.select_skin(skin_name)
 	else:
@@ -150,4 +151,5 @@ func _on_skin_action(skin_name: String):
 	refresh()
 
 func _on_close_pressed():
+	AudioManager.play("click")
 	visible = false
