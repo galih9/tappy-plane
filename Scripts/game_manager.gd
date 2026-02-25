@@ -2,7 +2,7 @@ extends Node
 
 signal game_over
 signal game_started
-signal restart_game
+
 signal star_collected
 signal biome_changed(biome_name: String)
 
@@ -82,6 +82,7 @@ var star_scene = preload("res://Scenes/stars.tscn")
 @onready var base_level_1 = $BaseLevel
 @onready var base_level_2 = $BaseLevel2
 @onready var ceiling_barrier = $CeilingBarrier
+@onready var prepUi = %PreparationControl
 
 var skin_selector_scene = preload("res://Scripts/skin_selector.gd")
 var skin_selector_instance: Control = null
@@ -329,6 +330,7 @@ func _on_play_pressed():
 	prepare_game()
 
 func prepare_game():
+	prepUi.visible = true
 	is_game_active = false
 	is_game_over = false
 	waiting_for_first_input = true
@@ -366,6 +368,7 @@ func start_game():
 	cave_mode_enabled = false
 	current_biome_index = 0
 	last_biome_distance = 0.0
+	prepUi.visible = false
 	
 	# Hide ceiling barrier at start and disable collision
 	if ceiling_barrier:
